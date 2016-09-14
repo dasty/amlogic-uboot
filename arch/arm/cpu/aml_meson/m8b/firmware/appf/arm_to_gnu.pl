@@ -252,46 +252,6 @@ foreach $line (@in)
     #===============================================================
 
 
-    #===============================================================
-    #
-    # ************ GNU BUG WORK AROUND #1 ********************
-    #
-    # The current (2008Q1) GNU assembler cannot handle 
-    # upper case characters in NEON register aliases...
-    # So we'll have to lower case them all, and cross our fingers!
-    #===============================================================
-    my ($reg,$loreg);
-    foreach $reg (keys(%register_aliases))
-    {
-        $loreg=lc($reg);
-        $instruction=~s/(\W)$reg(\W|$)/\1$loreg\2/g;
-    }
-    
-    # ************ GNU BUG WORK AROUND #2 ********************
-    #
-    # The current (2008Q1) GNU assembler cannot handle 
-    # overriding the register alias types in the instruction
-    #===============================================================
-
-    if ($line=~m/\s*V[A-Za-z0-9]*\.[USFusf][0-9]*\s/)
-    {
-        foreach $reg (keys(%register_aliases))
-        {
-            $reg=lc($reg);
-            $instruction=~s/(\W)$reg(\W|$)/\1${reg}_notype\2/g;
-        }
-    }
-    
-    # ************ GNU BUG WORK AROUND #3 ********************
-    #
-    # The current (2010Q1) GNU assembler cannot handle VMRS/VMSR
-    # So we switch them to MRS/MSR... seems to work.
-    #===============================================================
-
-    $instruction=~s/^\s*VMRS(.*)/        MRS$1/ig;
-    $instruction=~s/^\s*VMSR(.*)/        MSR$1/ig;
-    
-
     #--------------------------------------------------------------------------
     # The only time we are going to modify the comment is if it contains 
     # an EQU declaration (as these are likely to be commented out
