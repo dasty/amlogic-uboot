@@ -1246,6 +1246,8 @@ struct aml_pmu_driver* aml_pmu_get_driver(void)
 {
     uint8_t val;
 
+    printf("HACK: return null in aml_pmu_get_driver to speed up the boot\n");
+    return NULL;
     if (aml1218_read(0x00, &val)) {
         printf("%s, pmu check fail\n", __func__, val);
         return NULL;
